@@ -2,10 +2,9 @@ import path from "path";
 import "reflect-metadata";
 import express from 'express';
 import dotenv from "dotenv";
-import { Action, useExpressServer } from "routing-controllers";
+import { useExpressServer } from "routing-controllers";
 import { AppDataSource } from "./config/database/data-source";
-import { User } from "./entities/user.entity";
-import { authorizationInterceptor } from "./config/http/interceptors";
+import { authorizationInterceptor, currentUserInterceptor } from "./config/http/interceptors";
 
 const app = express();
 dotenv.config(); 
@@ -15,6 +14,7 @@ useExpressServer(app, {
         origin: "*"
     },
     authorizationChecker: authorizationInterceptor,
+    currentUserChecker: currentUserInterceptor,
     controllers: [path.join(__dirname + '/controllers/**/*.controller.ts')]
 });
 

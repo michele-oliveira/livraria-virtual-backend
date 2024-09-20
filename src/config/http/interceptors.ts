@@ -11,9 +11,19 @@ export const authorizationInterceptor = async (action: Action, roles: string[] =
         if (!verfiedToken) {
             throw new UnauthorizedError();
         }
-        const decodedToken = decodeJwt(token);
-        await AppDataSource.getRepository(User).findOne({ where: { id: decodedToken.id }});
+        const decodedUserToken = decodeJwt(token);
+        await AppDataSource.getRepository(User).findOneByOrFail({ id: decodedUserToken.id });
         return true;
+    } catch (error) {
+        throw new UnauthorizedError();
+    }
+}
+
+export const currentUserInterceptor = async (action: Action) => {
+    try {
+        const token = getJwtFromRequestHeaders(action.request.headers);
+        const decodedUserToken = decodeJwt(token);
+        return await AppDataSource.getRepository(User).findOneByOrFail({ id: decodedUserToken.id})
     } catch (error) {
         throw new UnauthorizedError();
     }
