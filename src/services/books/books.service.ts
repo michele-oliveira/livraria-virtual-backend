@@ -1,6 +1,7 @@
 import { Repository } from "typeorm";
 import { Book } from "../../entities/book.entity";
 import { getPublicImageUrl } from "../../utils/files";
+import { NotFoundError } from "routing-controllers";
 
 export class BooksService {
   private booksRepository: Repository<Book>;
@@ -24,8 +25,10 @@ export class BooksService {
     if (book) {
       book.image_1 = getPublicImageUrl(book.image_1);
       book.image_2 = getPublicImageUrl(book.image_2);
+      return book;
+    } else {
+      throw new NotFoundError("book not found");
     }
 
-    return book;
   }
 }
