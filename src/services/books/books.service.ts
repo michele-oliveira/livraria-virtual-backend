@@ -1,4 +1,4 @@
-import { Repository } from "typeorm";
+import { ILike, Repository } from "typeorm";
 import { Book } from "../../entities/book.entity";
 import { getPublicImageUrl } from "../../utils/files";
 import { NotFoundError } from "routing-controllers";
@@ -29,6 +29,18 @@ export class BooksService {
     } else {
       throw new NotFoundError("book not found");
     }
+  }
 
+  async searchBooks(search: string) {
+    const books = await this.booksRepository.find({
+      where: [
+        { book_name: ILike(`%${search}%`) },
+        { author: ILike(`%${search}%`) },
+        { gender: ILike(`%${search}%`)},
+        { publisher: ILike(`%${search}%`)},
+      ]
+    });
+
+    return books;
   }
 }

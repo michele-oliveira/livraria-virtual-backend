@@ -1,5 +1,4 @@
-import { Get, JsonController, Param } from "routing-controllers";
-import { Repository } from "typeorm";
+import { Get, JsonController, Param, QueryParam } from "routing-controllers";
 import { Book } from "../../entities/book.entity";
 import { BooksService } from "../../services/books/books.service";
 import { AppDataSource } from "../../config/database/data-source";
@@ -13,7 +12,10 @@ export class BooksController {
     this.booksService = new BooksService(booksRepository);
   }
   @Get("/")
-  async list() {
+  async list(@QueryParam('search') search?: string) {
+    if (search) {
+      return this.booksService.searchBooks(search);
+    }
     return this.booksService.list();
   }
 
