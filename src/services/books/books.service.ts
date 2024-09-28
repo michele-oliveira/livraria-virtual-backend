@@ -17,7 +17,7 @@ export class BooksService {
       book.image_2 = getPublicImageUrl(book.image_2);
     });
 
-    return books
+    return books;
   }
 
   async getById(bookId: string) {
@@ -36,9 +36,13 @@ export class BooksService {
       where: [
         { book_name: ILike(`%${search}%`) },
         { author: ILike(`%${search}%`) },
-        { gender: ILike(`%${search}%`)},
-        { publisher: ILike(`%${search}%`)},
-      ]
+        { gender: ILike(`%${search}%`) },
+        { publisher: ILike(`%${search}%`) },
+      ],
+    });
+    books.forEach((book) => {
+      book.image_1 = getPublicImageUrl(book.image_1);
+      book.image_2 = getPublicImageUrl(book.image_2);
     });
 
     return books;
