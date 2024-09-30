@@ -6,6 +6,7 @@ import {
   PrimaryGeneratedColumn,
 } from "typeorm";
 import { Book } from "./book.entity";
+import UserRole from "../common/enums/userRole.enum";
 
 @Entity({ name: "users" })
 export class User {
@@ -17,6 +18,9 @@ export class User {
 
   @Column()
   email: string;
+
+  @Column({ type: "enum", enum: UserRole, default: UserRole.USER })
+  role: UserRole;
 
   @Column()
   password: string;
