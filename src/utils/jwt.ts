@@ -2,7 +2,7 @@ import { decode } from "jsonwebtoken";
 import TokenizedUser from "../interfaces/tokenizedUser";
 
 export const getJwtFromRequestHeaders = (headers: any) => {
-    const [, token]: string = headers.authorization.split(' ');
+    const [, token]: string = headers.authorization?.split(' ') ?? [undefined, null];
     return token; 
 }
 
