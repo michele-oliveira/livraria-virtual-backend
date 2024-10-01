@@ -1,10 +1,10 @@
 import { ILike, Repository } from "typeorm";
+import { NotFoundError } from "routing-controllers";
 import { Book } from "../../entities/book.entity";
 import { getPublicImageUrl } from "../../utils/files";
-import { NotFoundError } from "routing-controllers";
 
 export class BooksService {
-  private booksRepository: Repository<Book>;
+  private readonly booksRepository: Repository<Book>;
 
   constructor(booksRepository: Repository<Book>) {
     this.booksRepository = booksRepository;

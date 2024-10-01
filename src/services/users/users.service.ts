@@ -1,17 +1,17 @@
 import { Repository } from "typeorm";
-import { User } from "../../entities/user.entity";
 import { genSalt, hash } from "bcrypt";
-import { NotFoundError, UnauthorizedError } from "routing-controllers";
 import { sign } from "jsonwebtoken";
-import TokenizedUser from "../../interfaces/tokenizedUser";
-import { NewUser, UserCredentials } from "./users.type";
+import { NotFoundError, UnauthorizedError } from "routing-controllers";
+import { User } from "../../entities/user.entity";
 import { Book } from "../../entities/book.entity";
-import ResourceAlreadyExistent from "../../errors/ResourceAlreadyExistent.error";
 import { getPublicImageUrl } from "../../utils/files";
+import TokenizedUser from "../../interfaces/tokenizedUser";
+import ResourceAlreadyExistent from "../../errors/ResourceAlreadyExistent.error";
+import { NewUser, UserCredentials } from "./users.type";
 
 export class UsersService {
-  private usersRepository: Repository<User>;
-  private booksRepository: Repository<Book>;
+  private readonly usersRepository: Repository<User>;
+  private readonly booksRepository: Repository<Book>;
 
   constructor(
     usersRepository: Repository<User>,

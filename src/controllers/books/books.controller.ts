@@ -5,14 +5,15 @@ import { AppDataSource } from "../../config/database/data-source";
 
 @JsonController("/books")
 export class BooksController {
-  private booksService: BooksService;
+  private readonly booksService: BooksService;
 
   constructor() {
     const booksRepository = AppDataSource.getRepository(Book);
     this.booksService = new BooksService(booksRepository);
   }
+
   @Get("/")
-  async list(@QueryParam('search') search?: string) {
+  async list(@QueryParam("search") search?: string) {
     if (search) {
       return this.booksService.searchBooks(search);
     }
