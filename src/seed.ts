@@ -9,6 +9,7 @@ const createBooks = async () => {
         id: 'fd1b0dbf-ec39-4939-b32a-86b55c53d9d5',
         image_1: 'livrostar.jpg',
         image_2: 'livrostarwars.png',
+        book_file: 'book.pdf',
         book_name: "Star Wars A Trilogia",
         author: "George Lucas",
         publisher: "Darkside",

@@ -31,4 +31,7 @@ export class Book {
 
     @Column()
     description: string;
+
+    @Column()
+    book_file: string;
 }
