@@ -1,7 +1,10 @@
+import { BadRequestError, NotFoundError } from "routing-controllers";
 import { ILike, Repository } from "typeorm";
-import { NotFoundError } from "routing-controllers";
+import path from "path";
 import { Book } from "../../entities/book.entity";
-import { getPublicImageUrl } from "../../utils/files";
+import { deleteFile, getPublicImageUrl } from "../../utils/files";
+import { bookFilesPath, imagesPath } from "../../constants/paths";
+import { DeleteBookFilesParams, NewBook } from "./books.type";
 
 export class BooksService {
   private readonly booksRepository: Repository<Book>;
@@ -46,5 +49,53 @@ export class BooksService {
     });
 
     return books;
+  }
+
+  async newBook(newBook: NewBook) {
+    try {
+      const image_1 = newBook.image_1[0] || null;
+      const image_2 = newBook.image_2[0] || null;
+      const book_file = newBook.book_file[0] || null;
+  
+      if (!image_1 || !image_2 || !book_file) {
+        throw new BadRequestError("image_1, image_2, or book_file are missing")
+      }
+  
+      const book = this.booksRepository.create({
+        ...newBook,
+        image_1: image_1.filename,
+        image_2: image_2.filename,
+        book_file: book_file.filename,
+      });
+  
+      await this.booksRepository.insert(book);
+  
+      return book;
+    } catch (error) {
+      console.error(error);
+      this.deleteBookFiles({
+        image_1: newBook.image_1,
+        image_2: newBook.image_2,
+        book_file: newBook.book_file,
+      });
+      
+      throw error;
+    }
+  }
+
+  private deleteBookFiles(files: DeleteBookFilesParams) {
+    try {
+      Object.values(files).forEach((file) => {
+        if (file?.[0]) {
+          if (file[0].mimetype.startsWith("image")) {
+            deleteFile(path.join(imagesPath, file[0].filename));
+          } else {
+            deleteFile(path.join(bookFilesPath, file[0].filename));
+          }
+        }
+      })
+    } catch (error) {
+      console.error(error);
+    }
   }
 }
