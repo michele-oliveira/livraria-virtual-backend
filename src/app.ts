@@ -24,6 +24,7 @@ async function bootstrap() {
 
   app.use(express.static("public"));
   app.use("/images", express.static("images"));
+  app.use("/book_files", express.static("book_files"));
 
   await AppDataSource.initialize();
   console.info("Database connected");

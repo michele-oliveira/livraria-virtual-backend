@@ -11,7 +11,13 @@ export type NewBook = {
   book_file: Express.Multer.File[];
 };
 
-export type DeleteBookFilesParams = Pick<
+export type UpdateBook = { id: string } & NewBook;
+
+export type BookFiles = Pick<
   NewBook,
   "image_1" | "image_2" | "book_file"
 >;
+
+export type BookFilesNames = {
+  [K in keyof BookFiles]: string;
+}
