@@ -1,5 +1,12 @@
 import { createHash } from "crypto";
-import { createReadStream, existsSync, unlink } from "fs";
+import {
+  createReadStream,
+  existsSync,
+  readdirSync,
+  unlink,
+  unlinkSync,
+} from "fs";
+import path from "path";
 
 export const getPublicImageUrl = (imageName: string) =>
   `${process.env.APP_URL}/images/${imageName}`;
@@ -35,4 +42,17 @@ export const deleteFile = (filePath: string) => {
       }
     });
   }
+};
+
+export const getFilesInDirectory = (directory: string): string[] =>
+  readdirSync(directory);
+
+export const removeMultipleFilesFromDirectory = (
+  baseDir: string,
+  filenames: string[]
+) => {
+  filenames.forEach((filename) => {
+    const file = path.join(baseDir, filename);
+    unlinkSync(file);
+  });
 };
