@@ -1,5 +1,6 @@
 import { Request } from "express";
 import {
+  Body,
   Delete,
   Get,
   JsonController,
@@ -8,13 +9,19 @@ import {
   Put,
   QueryParam,
   Req,
+  UseAfter,
   UseBefore,
 } from "routing-controllers";
 import { upload } from "../../config/storage/upload";
 import { AppDataSource } from "../../config/database/data-source";
 import { Book } from "../../entities/book.entity";
 import { BooksService } from "../../services/books/books.service";
-import { NewBook, UpdateBook } from "../../services/books/books.type";
+import {
+  NewBook as NewBookBody,
+  UpdateBook as UpdateBookBody,
+} from "./books.type";
+import { FailedUploadsMiddleware } from "../../config/middlewares/failedUploads.middleware";
+import { BookFilesDTO, NewBookDTO, UpdateBookDTO } from "../../interfaces/dto";
 
 @JsonController("/books")
 export class BooksController {
@@ -39,43 +46,55 @@ export class BooksController {
   }
 
   @Post("/")
-  @UseBefore(upload.fields([
-    { name: 'image_1', maxCount: 1 },
-    { name: 'image_2', maxCount: 1 },
-    { name: 'book_file', maxCount: 1 },
-  ]))
-  async create(@Req() req: Request) {
-    const body = req.body as Omit<NewBook, 'image_1' | 'image_2' | 'book_file'>;
-    const files = req.files as Pick<NewBook, 'image_1' | 'image_2' | 'book_file'>;
+  @UseBefore(
+    upload.fields([
+      { name: "image_1", maxCount: 1 },
+      { name: "image_2", maxCount: 1 },
+      { name: "book_file", maxCount: 1 },
+    ])
+  )
+  @UseAfter(FailedUploadsMiddleware)
+  async create(
+    @Req() req: Request,
+    @Body({ validate: true }) body: NewBookBody
+  ) {
+    const files = req.files as unknown as BookFilesDTO;
 
-    const newBookData = {
+    const newBookData: NewBookDTO = {
       ...body,
-      ...files
+      ...files,
+      pages: parseInt(body.pages),
     };
 
     return this.booksService.newBook(newBookData);
   }
 
   @Put("/")
-  @UseBefore(upload.fields([
-    { name: 'image_1', maxCount: 1 },
-    { name: 'image_2', maxCount: 1 },
-    { name: 'book_file', maxCount: 1 },
-  ]))
-  async update(@Req() req: Request) {
-    const body = req.body as Omit<UpdateBook, 'image_1' | 'image_2' | 'book_file'>;
-    const files = req.files as Pick<UpdateBook, 'image_1' | 'image_2' | 'book_file'>;
+  @UseBefore(
+    upload.fields([
+      { name: "image_1", maxCount: 1 },
+      { name: "image_2", maxCount: 1 },
+      { name: "book_file", maxCount: 1 },
+    ])
+  )
+  @UseAfter(FailedUploadsMiddleware)
+  async update(
+    @Req() req: Request,
+    @Body({ validate: true }) body: UpdateBookBody
+  ) {
+    const files = req.files as unknown as BookFilesDTO;
 
-    const newBookData = {
+    const newBookData: UpdateBookDTO = {
       ...body,
-      ...files
+      ...files,
+      pages: parseInt(body.pages),
     };
 
     return this.booksService.updateBook(newBookData);
   }
 
   @Delete("/:book_id")
-  async delete(@Param('book_id') bookId: string) {
+  async delete(@Param("book_id") bookId: string) {
     return this.booksService.removeBook(bookId);
   }
 }

@@ -9,7 +9,8 @@ import {
   getPublicImageUrl,
 } from "../../utils/files";
 import { bookFilesPath, imagesPath } from "../../constants/paths";
-import { BookFiles, BookFilesNames, NewBook, UpdateBook } from "./books.type";
+import { BookFilesDTO, NewBookDTO, UpdateBookDTO } from "../../interfaces/dto";
+import { BookFilesNames } from "./books.type";
 
 export class BooksService {
   private readonly booksRepository: Repository<Book>;
@@ -58,7 +59,7 @@ export class BooksService {
     return books;
   }
 
-  async newBook(newBook: NewBook): Promise<Book> {
+  async newBook(newBook: NewBookDTO): Promise<Book> {
     try {
       const { image_1: image1, image_2: image2, book_file: bookFile } = newBook;
 
@@ -93,7 +94,7 @@ export class BooksService {
     }
   }
 
-  async updateBook(updatedBook: UpdateBook): Promise<Book> {
+  async updateBook(updatedBook: UpdateBookDTO): Promise<Book> {
     try {
       const {
         image_1: image1,
@@ -154,7 +155,7 @@ export class BooksService {
     }
   }
 
-  private deleteBookFiles(files: BookFiles) {
+  private deleteBookFiles(files: BookFilesDTO) {
     try {
       Object.values(files).forEach((file) => {
         if (file?.[0]) {
@@ -172,7 +173,7 @@ export class BooksService {
 
   private async updateFileStorage(
     existingBook: Book,
-    newFiles: BookFiles
+    newFiles: BookFilesDTO
   ): Promise<BookFilesNames> {
     let bookFilesNames: BookFilesNames = {
       image_1: existingBook.image_1,

@@ -16,12 +16,12 @@ export class UsersController {
   }
 
   @Post("/login")
-  async login(@Body() credentials: UserCredentials) {
+  async login(@Body({ validate: true }) credentials: UserCredentials) {
     return this.usersService.login(credentials);
   }
 
   @Post("/register")
-  async register(@Body() newUser: NewUser) {
+  async register(@Body({ validate: true }) newUser: NewUser) {
     return this.usersService.createUser(newUser);
   }
 
