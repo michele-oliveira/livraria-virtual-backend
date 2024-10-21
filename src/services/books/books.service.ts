@@ -19,15 +19,28 @@ export class BooksService {
     this.booksRepository = booksRepository;
   }
 
-  async list() {
-    const books = await this.booksRepository.find();
+  async list(page: number, limit: number) {
+    if (limit <= 0 || page <= 0) {
+      throw new BadRequestError("Invalid pagination values");
+    }
+
+    const skip = (page - 1) * limit;
+
+    const [books, total] = await this.booksRepository.findAndCount({
+      skip,
+      take: limit,
+    });
     books.forEach((book) => {
       book.image_1 = getPublicImageUrl(book.image_1);
       book.image_2 = getPublicImageUrl(book.image_2);
       book.book_file = getPublicBookFileUrl(book.book_file);
     });
 
-    return books;
+    return {
+      books,
+      currentPage: page,
+      totalPages: Math.ceil(total / limit),
+    };
   }
 
   async getById(bookId: string) {
@@ -42,21 +55,33 @@ export class BooksService {
     }
   }
 
-  async searchBooks(search: string) {
-    const books = await this.booksRepository.find({
+  async searchBooks(search: string, page: number, limit: number) {
+    if (limit <= 0 || page <= 0) {
+      throw new BadRequestError("Invalid pagination values");
+    }
+
+    const skip = (page - 1) * limit;
+
+    const [books, total] = await this.booksRepository.findAndCount({
       where: [
         { book_name: ILike(`%${search}%`) },
         { author: ILike(`%${search}%`) },
         { gender: ILike(`%${search}%`) },
         { publisher: ILike(`%${search}%`) },
       ],
+      skip,
+      take: limit,
     });
     books.forEach((book) => {
       book.image_1 = getPublicImageUrl(book.image_1);
       book.image_2 = getPublicImageUrl(book.image_2);
     });
 
-    return books;
+    return {
+      books,
+      currentPage: page,
+      totalPages: Math.ceil(total / limit),
+    };
   }
 
   async newBook(newBook: NewBookDTO): Promise<Book> {

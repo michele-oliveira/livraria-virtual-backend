@@ -7,7 +7,7 @@ import {
   Param,
   Post,
   Put,
-  QueryParam,
+  QueryParams,
   Req,
   UseAfter,
   UseBefore,
@@ -17,6 +17,7 @@ import { AppDataSource } from "../../config/database/data-source";
 import { Book } from "../../entities/book.entity";
 import { BooksService } from "../../services/books/books.service";
 import {
+  ListBookParams,
   NewBook as NewBookBody,
   UpdateBook as UpdateBookBody,
 } from "./books.type";
@@ -33,11 +34,13 @@ export class BooksController {
   }
 
   @Get("/")
-  async list(@QueryParam("search") search?: string) {
+  async list(@QueryParams() params: ListBookParams) {
+    const { search, page, limit } = params;
+
     if (search) {
-      return this.booksService.searchBooks(search);
+      return this.booksService.searchBooks(search, page, limit);
     }
-    return this.booksService.list();
+    return this.booksService.list(page, limit);
   }
 
   @Get("/:book_id")

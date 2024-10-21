@@ -1,11 +1,16 @@
 import {
   IsNotEmpty,
+  IsNumber,
   IsNumberString,
+  IsOptional,
+  IsPositive,
   IsString,
   IsUUID,
   MaxLength,
+  Min,
   MinLength,
 } from "class-validator";
+import { BOOKS_PER_PAGE } from "../../constants/booksControllerDefaultConfigs";
 
 export class NewBook {
   @IsString()
@@ -43,4 +48,20 @@ export class NewBook {
 export class UpdateBook extends NewBook {
   @IsUUID()
   id: string;
+}
+
+export class ListBookParams {
+  @IsNumber()
+  @IsPositive()
+  @Min(1)
+  page = 1;
+
+  @IsNumber()
+  @IsPositive()
+  @Min(6)
+  limit = BOOKS_PER_PAGE;
+
+  @IsString()
+  @IsOptional()
+  search: string;
 }
