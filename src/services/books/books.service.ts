@@ -75,6 +75,7 @@ export class BooksService {
     books.forEach((book) => {
       book.image_1 = getPublicImageUrl(book.image_1);
       book.image_2 = getPublicImageUrl(book.image_2);
+      book.book_file = getPublicBookFileUrl(book.book_file);
     });
 
     return {
