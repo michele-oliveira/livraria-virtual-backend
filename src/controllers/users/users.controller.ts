@@ -1,9 +1,9 @@
-import { Authorized, Body, CurrentUser, Delete, Get, JsonController, Param, Post } from "routing-controllers";
+import { Authorized, Body, CurrentUser, Delete, Get, JsonController, Param, Post, QueryParams } from "routing-controllers";
 import { AppDataSource } from "../../config/database/data-source";
 import { User } from "../../entities/user.entity";
 import { Book } from "../../entities/book.entity";
 import { UsersService } from "../../services/users/users.service";
-import { NewUser, UserCredentials } from "./users.type";
+import { ListFavoriteBookParams, NewUser, UserCredentials } from "./users.type";
 
 @JsonController("/users")
 export class UsersController {
@@ -33,8 +33,10 @@ export class UsersController {
 
   @Authorized()
   @Get("/favorite-books")
-  async getFavoriteBooks(@CurrentUser() user: User) {
-    return this.usersService.getFavoriteBooks(user.id);
+  async getFavoriteBooks(@CurrentUser() user: User, @QueryParams() params: ListFavoriteBookParams) {
+    const { page, limit } = params;
+
+    return this.usersService.getFavoriteBooks(user.id, page, limit);
   }
 
   @Authorized()
