@@ -1,4 +1,14 @@
-import { Authorized, Body, CurrentUser, Delete, Get, JsonController, Param, Post, QueryParams } from "routing-controllers";
+import {
+  Authorized,
+  Body,
+  CurrentUser,
+  Delete,
+  Get,
+  JsonController,
+  Param,
+  Post,
+  QueryParams,
+} from "routing-controllers";
 import { AppDataSource } from "../../config/database/data-source";
 import { User } from "../../entities/user.entity";
 import { Book } from "../../entities/book.entity";
@@ -33,7 +43,10 @@ export class UsersController {
 
   @Authorized()
   @Get("/favorite-books")
-  async getFavoriteBooks(@CurrentUser() user: User, @QueryParams() params: ListFavoriteBookParams) {
+  async getFavoriteBooks(
+    @CurrentUser() user: User,
+    @QueryParams() params: ListFavoriteBookParams
+  ) {
     const { page, limit } = params;
 
     return this.usersService.getFavoriteBooks(user.id, page, limit);
@@ -41,13 +54,19 @@ export class UsersController {
 
   @Authorized()
   @Post("/favorite-books/:book_id")
-  async addFavoriteBook(@CurrentUser() user: User, @Param("book_id") bookId: string) {
+  async addFavoriteBook(
+    @CurrentUser() user: User,
+    @Param("book_id") bookId: string
+  ) {
     return this.usersService.addFavoriteBook(user.id, bookId);
   }
 
   @Authorized()
   @Delete("/favorite-books/:book_id")
-  async removeFavoriteBook(@CurrentUser() user: User, @Param("book_id") bookId: string) {
+  async removeFavoriteBook(
+    @CurrentUser() user: User,
+    @Param("book_id") bookId: string
+  ) {
     return this.usersService.removeFavoriteBook(user.id, bookId);
   }
 }

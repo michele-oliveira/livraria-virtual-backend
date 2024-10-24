@@ -1,5 +1,11 @@
-import { IsEmail, IsNumber, IsPositive, IsString, Min, MinLength } from "class-validator";
-import { BOOKS_PER_PAGE } from "../../constants/booksControllerDefaultConfigs";
+import {
+  IsEmail,
+  IsInt,
+  IsOptional,
+  IsString,
+  Min,
+  MinLength,
+} from "class-validator";
 
 export class UserCredentials {
   @IsEmail()
@@ -24,13 +30,13 @@ export class NewUser {
 }
 
 export class ListFavoriteBookParams {
-  @IsNumber()
-  @IsPositive()
+  @IsOptional()
+  @IsInt()
   @Min(1)
-  page = 1;
+  page?: number;
 
-  @IsNumber()
-  @IsPositive()
+  @IsOptional()
+  @IsInt()
   @Min(6)
-  limit = BOOKS_PER_PAGE;
+  limit?: number;
 }

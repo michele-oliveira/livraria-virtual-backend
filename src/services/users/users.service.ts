@@ -9,6 +9,7 @@ import {
 import { User } from "../../entities/user.entity";
 import { Book } from "../../entities/book.entity";
 import { getPublicBookFileUrl, getPublicImageUrl } from "../../utils/files";
+import { BOOKS_PER_PAGE } from "../../constants/booksControllerDefaultConfigs";
 import TokenizedUser from "../../interfaces/tokenizedUser";
 import ResourceAlreadyExistent from "../../errors/ResourceAlreadyExistent.error";
 import { NewUser, UserCredentials } from "./users.type";
@@ -59,13 +60,11 @@ export class UsersService {
     return this.usersRepository.find();
   }
 
-  async getFavoriteBooks(userId: string, page: number, limit: number) {
-    if (limit <= 0 || page <= 0) {
-      throw new BadRequestError("Invalid pagination values");
-    }
-
-    const skip = (page - 1) * limit;
-
+  async getFavoriteBooks(
+    userId: string,
+    page?: number,
+    limit: number = BOOKS_PER_PAGE
+  ) {
     const user = await this.usersRepository.findOne({
       where: { id: userId },
       relations: ["favoriteBooks"],
@@ -74,6 +73,23 @@ export class UsersService {
       throw new NotFoundError("User not found");
     }
 
+    if (!page || !limit) {
+      const favoriteBooks = user.favoriteBooks;
+      favoriteBooks.forEach((book) => {
+        book.image_1 = getPublicImageUrl(book.image_1);
+        book.image_2 = getPublicImageUrl(book.image_2);
+        book.book_file = getPublicBookFileUrl(book.book_file);
+      });
+
+      return { books: favoriteBooks };
+    }
+
+    if (limit <= 0 || page <= 0) {
+      throw new BadRequestError("Invalid pagination values");
+    }
+
+    const skip = (page - 1) * limit;
+
     const favoriteBooksIds = user.favoriteBooks.map((book) => book.id);
 
     const [favoriteBooks, total] = await this.booksRepository.findAndCount({
@@ -81,10 +97,10 @@ export class UsersService {
       skip,
       take: limit,
     });
-    favoriteBooks.forEach((book) => {    
-        book.image_1 = getPublicImageUrl(book.image_1);
-        book.image_2 = getPublicImageUrl(book.image_2);
-        book.book_file = getPublicBookFileUrl(book.book_file);
+    favoriteBooks.forEach((book) => {
+      book.image_1 = getPublicImageUrl(book.image_1);
+      book.image_2 = getPublicImageUrl(book.image_2);
+      book.book_file = getPublicBookFileUrl(book.book_file);
     });
 
     return {
