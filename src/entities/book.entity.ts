@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Subgender } from "./subgender.entity";
 
 @Entity({ name: "books" })
 export class Book {
@@ -27,11 +28,12 @@ export class Book {
   pages: number;
 
   @Column()
-  gender: string;
-
-  @Column()
   description: string;
 
   @Column()
   book_file: string;
+
+  @ManyToOne(() => Subgender)
+  @JoinColumn({ name: "subgender_id" })
+  subgender: Subgender;
 }
