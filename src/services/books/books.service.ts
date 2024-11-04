@@ -2,6 +2,7 @@ import path from "path";
 import { BadRequestError, NotFoundError } from "routing-controllers";
 import { EntityNotFoundError, ILike, Repository } from "typeorm";
 import { Book } from "../../entities/book.entity";
+import { Gender } from "../../entities/gender.entity";
 import {
   compareFiles,
   deleteFile,
@@ -14,9 +15,18 @@ import { BookFilesNames } from "./books.type";
 
 export class BooksService {
   private readonly booksRepository: Repository<Book>;
+  private readonly gendersRepository: Repository<Gender>;
 
-  constructor(booksRepository: Repository<Book>) {
+  constructor(booksRepository: Repository<Book>, gendersRepository: Repository<Gender>) {
     this.booksRepository = booksRepository;
+    this.gendersRepository = gendersRepository;
+  }
+
+  async listGenders() {
+    return this.gendersRepository.find({
+      relations: ['subgenders'],
+      order: { name: 'ASC' }
+    });
   }
 
   async list(page: number, limit: number) {
