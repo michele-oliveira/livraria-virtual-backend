@@ -54,9 +54,9 @@ const createBookGendersAndSubgenders = async () => {
     ]);
 
     const romanceSubgenders = subgendersRepository.create([
-        { id: "2f2d73c6-5994-4335-9ebe-619dec9047c4", name: "Contemporâneo", gender: scientificGender },
-        { id: "7af6cee6-4969-4b88-ad1f-8fb16e82bb2d", name: "Histórico", gender: scientificGender },
-        { id: "c6a185ee-a7a7-4cda-979a-28577108835b", name: "Policial", gender: scientificGender },
+        { id: "2f2d73c6-5994-4335-9ebe-619dec9047c4", name: "Contemporâneo", gender: romanceGender },
+        { id: "7af6cee6-4969-4b88-ad1f-8fb16e82bb2d", name: "Histórico", gender: romanceGender },
+        { id: "c6a185ee-a7a7-4cda-979a-28577108835b", name: "Policial", gender: romanceGender },
     ]);
 
     await subgendersRepository.save([
