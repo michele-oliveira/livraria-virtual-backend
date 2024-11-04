@@ -37,6 +37,7 @@ export class BooksService {
     const skip = (page - 1) * limit;
 
     const [books, total] = await this.booksRepository.findAndCount({
+      relations: ["subgender", "subgender.gender"],
       skip,
       take: limit,
     });
@@ -54,7 +55,10 @@ export class BooksService {
   }
 
   async getById(bookId: string) {
-    const book = await this.booksRepository.findOneBy({ id: bookId });
+    const book = await this.booksRepository.findOne({
+      relations: ["subgender", "subgender.gender"],
+      where: { id: bookId },
+    });
     if (book) {
       book.image_1 = getPublicImageUrl(book.image_1);
       book.image_2 = getPublicImageUrl(book.image_2);
@@ -73,10 +77,12 @@ export class BooksService {
     const skip = (page - 1) * limit;
 
     const [books, total] = await this.booksRepository.findAndCount({
+      relations: ["subgender", "subgender.gender"],
       where: [
         { book_name: ILike(`%${search}%`) },
         { author: ILike(`%${search}%`) },
-        { gender: ILike(`%${search}%`) },
+        { subgender: { name: ILike(`%${search}%`) }},
+        { subgender: { gender: { name: ILike(`%${search}%`) }}},
         { publisher: ILike(`%${search}%`) },
       ],
       skip,
