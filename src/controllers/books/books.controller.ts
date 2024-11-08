@@ -16,6 +16,7 @@ import { upload } from "../../config/storage/upload";
 import { AppDataSource } from "../../config/database/data-source";
 import { Book } from "../../entities/book.entity";
 import { Gender } from "../../entities/gender.entity";
+import { Subgender } from "../../entities/subgender.entity";
 import { BooksService } from "../../services/books/books.service";
 import {
   ListBookParams,
@@ -32,7 +33,13 @@ export class BooksController {
   constructor() {
     const booksRepository = AppDataSource.getRepository(Book);
     const gendersRepository = AppDataSource.getRepository(Gender);
-    this.booksService = new BooksService(booksRepository, gendersRepository);
+    const subgendersRepository = AppDataSource.getRepository(Subgender);
+    
+    this.booksService = new BooksService(
+      booksRepository,
+      gendersRepository,
+      subgendersRepository
+    );
   }
 
   @Get("/list-genders")

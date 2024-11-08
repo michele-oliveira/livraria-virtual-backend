@@ -3,6 +3,7 @@ import { BadRequestError, NotFoundError } from "routing-controllers";
 import { EntityNotFoundError, ILike, Repository } from "typeorm";
 import { Book } from "../../entities/book.entity";
 import { Gender } from "../../entities/gender.entity";
+import { Subgender } from "../../entities/subgender.entity";
 import {
   compareFiles,
   deleteFile,
@@ -16,10 +17,16 @@ import { BookFilesNames } from "./books.type";
 export class BooksService {
   private readonly booksRepository: Repository<Book>;
   private readonly gendersRepository: Repository<Gender>;
+  private readonly subgendersRepository: Repository<Subgender>;
 
-  constructor(booksRepository: Repository<Book>, gendersRepository: Repository<Gender>) {
+  constructor(
+    booksRepository: Repository<Book>,
+    gendersRepository: Repository<Gender>,
+    subgendersRepository: Repository<Subgender>
+  ) {
     this.booksRepository = booksRepository;
     this.gendersRepository = gendersRepository;
+    this.subgendersRepository = subgendersRepository;
   }
 
   async listGenders() {
@@ -103,6 +110,15 @@ export class BooksService {
 
   async newBook(newBook: NewBookDTO): Promise<Book> {
     try {
+      const subgender = await this.subgendersRepository.findOne({
+        where: { id: newBook.subgender_id },
+        relations: ['gender']
+      });
+
+      if (!subgender) {
+        throw new NotFoundError("Provided subgender_id does not exist");
+      }
+      
       const { image_1: image1, image_2: image2, book_file: bookFile } = newBook;
 
       if (!image1?.[0] || !image2?.[0] || !bookFile?.[0]) {
@@ -111,6 +127,7 @@ export class BooksService {
 
       const book = this.booksRepository.create({
         ...newBook,
+        subgender,
         image_1: image1[0].filename,
         image_2: image2[0].filename,
         book_file: bookFile[0].filename,

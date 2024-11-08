@@ -4,7 +4,7 @@ export interface NewBookDTO {
   publisher: string;
   language: string;
   pages: number;
-  gender: string;
+  subgender_id: string;
   description: string;
   image_1: Express.Multer.File[];
   image_2: Express.Multer.File[];

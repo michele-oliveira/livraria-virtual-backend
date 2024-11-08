@@ -3,7 +3,6 @@ import {
   IsNumber,
   IsNumberString,
   IsOptional,
-  IsPositive,
   IsString,
   IsUUID,
   MaxLength,
@@ -31,13 +30,13 @@ export class NewBook {
 
   @IsNumberString(
     { no_symbols: true },
-    { message: "pages mmust be a whole number" }
+    { message: "pages must be a whole number" }
   )
   pages: string;
 
-  @IsString()
+  @IsUUID()
   @IsNotEmpty()
-  gender: string;
+  subgender_id: string;
 
   @IsString()
   @MinLength(24)
@@ -52,12 +51,10 @@ export class UpdateBook extends NewBook {
 
 export class ListBookParams {
   @IsNumber()
-  @IsPositive()
   @Min(1)
   page = 1;
 
   @IsNumber()
-  @IsPositive()
   @Min(6)
   limit = BOOKS_PER_PAGE;
 
