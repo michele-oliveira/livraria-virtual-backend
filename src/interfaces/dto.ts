@@ -19,4 +19,4 @@ export type BookFilesDTO = {
   image_1: Express.Multer.File[];
   image_2: Express.Multer.File[];
   book_file: Express.Multer.File[];
-}
+};

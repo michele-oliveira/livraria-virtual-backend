@@ -70,7 +70,7 @@ export class UsersService {
       relations: [
         "favoriteBooks",
         "favoriteBooks.subgender",
-        "favoriteBooks.subgender.gender"
+        "favoriteBooks.subgender.gender",
       ],
     });
     if (!user) {

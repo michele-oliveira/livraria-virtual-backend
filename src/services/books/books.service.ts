@@ -31,8 +31,8 @@ export class BooksService {
 
   async listGenders() {
     return this.gendersRepository.find({
-      relations: ['subgenders'],
-      order: { name: 'ASC' }
+      relations: ["subgenders"],
+      order: { name: "ASC" },
     });
   }
 
@@ -88,8 +88,8 @@ export class BooksService {
       where: [
         { book_name: ILike(`%${search}%`) },
         { author: ILike(`%${search}%`) },
-        { subgender: { name: ILike(`%${search}%`) }},
-        { subgender: { gender: { name: ILike(`%${search}%`) }}},
+        { subgender: { name: ILike(`%${search}%`) } },
+        { subgender: { gender: { name: ILike(`%${search}%`) } } },
         { publisher: ILike(`%${search}%`) },
       ],
       skip,
@@ -112,13 +112,13 @@ export class BooksService {
     try {
       const subgender = await this.subgendersRepository.findOne({
         where: { id: newBook.subgender_id },
-        relations: ['gender']
+        relations: ["gender"],
       });
 
       if (!subgender) {
         throw new NotFoundError("Provided subgender_id does not exist");
       }
-      
+
       const { image_1: image1, image_2: image2, book_file: bookFile } = newBook;
 
       if (!image1?.[0] || !image2?.[0] || !bookFile?.[0]) {
@@ -157,7 +157,7 @@ export class BooksService {
     try {
       const subgender = await this.subgendersRepository.findOne({
         where: { id: updatedBook.subgender_id },
-        relations: ['gender']
+        relations: ["gender"],
       });
 
       if (!subgender) {

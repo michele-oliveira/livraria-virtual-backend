@@ -34,7 +34,7 @@ export class BooksController {
     const booksRepository = AppDataSource.getRepository(Book);
     const gendersRepository = AppDataSource.getRepository(Gender);
     const subgendersRepository = AppDataSource.getRepository(Subgender);
-    
+
     this.booksService = new BooksService(
       booksRepository,
       gendersRepository,
