@@ -49,7 +49,7 @@ export class UpdateBook extends NewBook {
   id: string;
 }
 
-export class ListBookParams {
+export class ListBooksBySubgenderParams {
   @IsNumber()
   @Min(1)
   page = 1;
@@ -57,7 +57,9 @@ export class ListBookParams {
   @IsNumber()
   @Min(6)
   limit = BOOKS_PER_PAGE;
+}
 
+export class ListBookParams extends ListBooksBySubgenderParams {
   @IsString()
   @IsOptional()
   search: string;

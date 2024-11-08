@@ -36,15 +36,27 @@ export class BooksService {
     });
   }
 
-  async list(page: number, limit: number) {
+  async list(page: number, limit: number, subgenderId?: string) {
     if (limit <= 0 || page <= 0) {
       throw new BadRequestError("Invalid pagination values");
     }
 
+    if (subgenderId) {
+      const subgender = await this.subgendersRepository.findOneByOrFail({ id: subgenderId });
+      if (!subgender) {
+        throw new NotFoundError('Subgender does not exist');
+      }
+    }
+ 
     const skip = (page - 1) * limit;
 
     const [books, total] = await this.booksRepository.findAndCount({
       relations: ["subgender", "subgender.gender"],
+      where: subgenderId ? {
+        subgender: {
+          id: subgenderId
+        },
+      } : undefined,
       skip,
       take: limit,
     });

@@ -20,6 +20,7 @@ import { Subgender } from "../../entities/subgender.entity";
 import { BooksService } from "../../services/books/books.service";
 import {
   ListBookParams,
+  ListBooksBySubgenderParams,
   NewBook as NewBookBody,
   UpdateBook as UpdateBookBody,
 } from "./books.type";
@@ -55,6 +56,16 @@ export class BooksController {
       return this.booksService.searchBooks(search, page, limit);
     }
     return this.booksService.list(page, limit);
+  }
+
+  @Get("/by-subgender/:subgender_id")
+  async listBySubgender(
+    @Param('subgender_id') subgenderId: string,
+    @QueryParams() params: ListBooksBySubgenderParams,
+  ) {
+    const { page, limit } = params;
+
+    return this.booksService.list(page, limit, subgenderId);
   }
 
   @Get("/:book_id")
