@@ -1,3 +1,11 @@
 node_modules
+
+public/book_files/*
+!public/book_files/book.pdf
+
+public/images/*
+!public/images/livrostar.jpg
+!public/images/livrostarwars.png
+
 .env
 .pgdata
