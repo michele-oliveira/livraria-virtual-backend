@@ -155,6 +155,15 @@ export class BooksService {
 
   async updateBook(updatedBook: UpdateBookDTO): Promise<Book> {
     try {
+      const subgender = await this.subgendersRepository.findOne({
+        where: { id: updatedBook.subgender_id },
+        relations: ['gender']
+      });
+
+      if (!subgender) {
+        throw new NotFoundError("Provided subgender_id does not exist");
+      }
+
       const {
         image_1: image1,
         image_2: image2,
@@ -176,6 +185,7 @@ export class BooksService {
       });
 
       const updatedBookEntity = this.booksRepository.create({
+        subgender,
         ...updatedBook,
         ...updatedFileNames,
       });
