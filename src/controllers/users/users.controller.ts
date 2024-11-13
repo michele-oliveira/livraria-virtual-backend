@@ -36,12 +36,6 @@ export class UsersController {
   }
 
   @Authorized()
-  @Get("/list")
-  async getAllUsers() {
-    return this.usersService.getAllUsers();
-  }
-
-  @Authorized()
   @Get("/favorite-books")
   async getFavoriteBooks(
     @CurrentUser() user: User,

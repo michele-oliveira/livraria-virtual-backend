@@ -56,10 +56,6 @@ export class UsersService {
     return this.usersRepository.insert(newUser);
   }
 
-  async getAllUsers() {
-    return this.usersRepository.find();
-  }
-
   async getFavoriteBooks(
     userId: string,
     page?: number,
