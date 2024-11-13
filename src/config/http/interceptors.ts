@@ -14,8 +14,8 @@ export const authorizationInterceptor = async (
     if (!token) {
         throw new UnauthorizedError();
     }
-    const verfiedToken = verify(token, process.env.JWT_SECRET!);
-    if (!verfiedToken) {
+    const verifiedToken = verify(token, process.env.JWT_SECRET!);
+    if (!verifiedToken) {
       throw new UnauthorizedError("Invalid access token");
     }
     const decodedUserToken = decodeJwt(token);
