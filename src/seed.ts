@@ -1,7 +1,27 @@
+import dotenv from 'dotenv';
+import { genSalt, hash } from "bcrypt";
 import { AppDataSource } from "./config/database/data-source"
+import { User } from "./entities/user.entity";
 import { Book } from "./entities/book.entity"
 import { Gender } from "./entities/gender.entity";
 import { Subgender } from "./entities/subgender.entity";
+import UserRole from "./common/enums/userRole.enum";
+
+const createUser = async () => {
+    const usersRepository = AppDataSource.getRepository(User);
+
+    const salt = await genSalt();
+    const user = usersRepository.create({
+        id: '4614b08c-0dc7-4ab2-9cbf-af4adcbb6d29',
+        name: 'Administrador',
+        email: 'administrador@email.com',
+        role: UserRole.ADMIN,
+        salt,
+        password: await hash(process.env.DEFAULT_ADMIN_PASSWORD!, salt),
+    });
+
+    await usersRepository.save(user);
+}
 
 const createBookGendersAndSubgenders = async () => {
     const gendersRepository = AppDataSource.getRepository(Gender);
@@ -95,7 +115,9 @@ const createBooks = async () => {
 }
 
 const seed = async () => {
+    dotenv.config();
     await AppDataSource.initialize();
+    await createUser();
     await createBookGendersAndSubgenders();
     await createBooks();
     await AppDataSource.destroy();
