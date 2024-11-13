@@ -38,7 +38,7 @@ export const deleteFile = (filePath: string) => {
   if (filePath && existsSync(filePath)) {
     unlink(filePath, (err) => {
       if (err) {
-        console.error(`Error while deliting file ${filePath}`, err);
+        console.error(`Error while deleting file ${filePath}`, err);
       }
     });
   }
