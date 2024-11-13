@@ -1,9 +1,8 @@
 import { Action, UnauthorizedError } from "routing-controllers";
-import { verify } from "jsonwebtoken";
+import { JsonWebTokenError, verify } from "jsonwebtoken";
 import { decodeJwt, getJwtFromRequestHeaders } from "../../utils/jwt";
 import { AppDataSource } from "../database/data-source";
 import { User } from "../../entities/user.entity";
-import UserRole from "../../common/enums/userRole.enum";
 
 export const authorizationInterceptor = async (
   action: Action,
@@ -12,26 +11,31 @@ export const authorizationInterceptor = async (
   try {
     const token = getJwtFromRequestHeaders(action.request.headers);
     if (!token) {
-        throw new UnauthorizedError();
+      throw new UnauthorizedError("User's access token not provided");
     }
+
     const verifiedToken = verify(token, process.env.JWT_SECRET!);
     if (!verifiedToken) {
       throw new UnauthorizedError("Invalid access token");
     }
+    
     const decodedUserToken = decodeJwt(token);
+    const actualUser = await AppDataSource.getRepository(User).findOneByOrFail({
+      id: decodedUserToken.id,
+    });
     if (
-      roles.includes(UserRole.ADMIN) &&
-      decodedUserToken.role !== UserRole.ADMIN
+      decodedUserToken.role !== actualUser.role ||
+      (roles.length && !roles.includes(actualUser.role))
     ) {
       throw new UnauthorizedError("Invalid user role");
     }
-    await AppDataSource.getRepository(User).findOneByOrFail({
-      id: decodedUserToken.id,
-    });
     return true;
   } catch (error) {
     if (error instanceof UnauthorizedError) {
       throw error;
+    }
+    if (error instanceof JsonWebTokenError) {
+      throw new UnauthorizedError("Invalid access token");
     }
     throw new UnauthorizedError();
   }
