@@ -9,6 +9,7 @@ import {
   deleteFile,
   getPublicBookFileUrl,
   getPublicImageUrl,
+  isImage,
 } from "../../utils/files";
 import { bookFilesPath, imagesPath } from "../../constants/paths";
 import { BookFilesDTO, NewBookDTO, UpdateBookDTO } from "../../interfaces/dto";
@@ -227,7 +228,21 @@ export class BooksService {
 
   async removeBook(bookId: string) {
     try {
-      const book = await this.booksRepository.findOneByOrFail({ id: bookId });
+      const book = await this.booksRepository.findOneBy({ id: bookId });
+      if (!book) {
+        throw new NotFoundError("Book not found");
+      }
+      
+      [book.image_1, book.image_2, book.book_file].forEach((fileName) => {
+        if (fileName) {
+          if (isImage(fileName)) {
+            deleteFile(path.join(imagesPath, fileName));
+          } else {
+            deleteFile(path.join(bookFilesPath, fileName));
+          }
+        } 
+      });
+
       await this.booksRepository.remove(book);
       return null;
     } catch (error) {
