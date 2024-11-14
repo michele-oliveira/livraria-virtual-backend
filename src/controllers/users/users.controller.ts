@@ -14,6 +14,7 @@ import { User } from "../../entities/user.entity";
 import { Book } from "../../entities/book.entity";
 import { UsersService } from "../../services/users/users.service";
 import { ListFavoriteBookParams, NewUser, UserCredentials } from "./users.type";
+import UserRole from "../../common/enums/userRole.enum";
 
 @JsonController("/users")
 export class UsersController {
@@ -35,7 +36,7 @@ export class UsersController {
     return this.usersService.createUser(newUser);
   }
 
-  @Authorized()
+  @Authorized(UserRole.USER)
   @Get("/favorite-books")
   async getFavoriteBooks(
     @CurrentUser() user: User,
@@ -46,7 +47,7 @@ export class UsersController {
     return this.usersService.getFavoriteBooks(user.id, page, limit);
   }
 
-  @Authorized()
+  @Authorized(UserRole.USER)
   @Post("/favorite-books/:book_id")
   async addFavoriteBook(
     @CurrentUser() user: User,
@@ -55,7 +56,7 @@ export class UsersController {
     return this.usersService.addFavoriteBook(user.id, bookId);
   }
 
-  @Authorized()
+  @Authorized(UserRole.USER)
   @Delete("/favorite-books/:book_id")
   async removeFavoriteBook(
     @CurrentUser() user: User,

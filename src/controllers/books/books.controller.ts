@@ -1,5 +1,6 @@
 import { Request } from "express";
 import {
+  Authorized,
   Body,
   Delete,
   Get,
@@ -26,6 +27,7 @@ import {
 } from "./books.type";
 import { FailedUploadsMiddleware } from "../../config/middlewares/failedUploads.middleware";
 import { BookFilesDTO, NewBookDTO, UpdateBookDTO } from "../../interfaces/dto";
+import UserRole from "../../common/enums/userRole.enum";
 
 @JsonController("/books")
 export class BooksController {
@@ -74,6 +76,7 @@ export class BooksController {
   }
 
   @Post("/")
+  @Authorized(UserRole.ADMIN)
   @UseBefore(
     upload.fields([
       { name: "image_1", maxCount: 1 },
@@ -98,6 +101,7 @@ export class BooksController {
   }
 
   @Put("/")
+  @Authorized(UserRole.ADMIN)
   @UseBefore(
     upload.fields([
       { name: "image_1", maxCount: 1 },
@@ -122,6 +126,7 @@ export class BooksController {
   }
 
   @Delete("/:book_id")
+  @Authorized(UserRole.ADMIN)
   async delete(@Param("book_id") bookId: string) {
     return this.booksService.removeBook(bookId);
   }
