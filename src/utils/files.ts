@@ -14,6 +14,12 @@ export const getPublicImageUrl = (imageName: string) =>
 export const getPublicBookFileUrl = (bookFileName: string) =>
   `${process.env.APP_URL}/book_files/${bookFileName}`;
 
+export const isImage = (fileName: string) => {
+  const imageExtensions = ["jpg", "jpeg", "png", "gif", "bmp", "svg", "webp", "tiff"];
+  const extension = fileName.split(".").pop();
+  return extension ? imageExtensions.includes(extension) : false;
+}
+
 export const generateFileHash = (filePath: string): Promise<string> => {
   return new Promise((resolve, reject) => {
     const hash = createHash("sha256");
