@@ -29,7 +29,7 @@ export class UsersService {
   async login(credentials: UserCredentials) {
     const { email, password } = credentials;
     try {
-      const user = (await this.usersRepository.findOneBy({ email })) as User;
+      const user = await this.usersRepository.findOneByOrFail({ email });
       const hashedPassword = await hash(password, user.salt);
 
       if (hashedPassword === user.password) {
