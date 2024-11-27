@@ -285,11 +285,11 @@ export class BooksService {
           ? imagesPath
           : bookFilesPath;
         const oldFileName = existingBook[key as keyof Book] as string;
-        const isFaleIdentical = await compareFiles(
+        const isFileIdentical = await compareFiles(
           path.join(baseFilePath, oldFileName),
           newFile.path
         );
-        if (isFaleIdentical) {
+        if (isFileIdentical) {
           deleteFile(newFile.path);
           bookFilesNames[key as keyof BookFilesNames] = oldFileName;
         } else {
