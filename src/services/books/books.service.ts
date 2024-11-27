@@ -45,7 +45,7 @@ export class BooksService {
     if (subgenderId) {
       const subgender = await this.subgendersRepository.findOneByOrFail({ id: subgenderId });
       if (!subgender) {
-        throw new NotFoundError('Subgender does not exist');
+        throw new NotFoundError('Subgender not found');
       }
     }
  
@@ -129,7 +129,7 @@ export class BooksService {
       });
 
       if (!subgender) {
-        throw new NotFoundError("Provided subgender_id does not exist");
+        throw new NotFoundError("Provided subgender_id not found");
       }
 
       const { image_1: image1, image_2: image2, book_file: bookFile } = newBook;
@@ -174,7 +174,7 @@ export class BooksService {
       });
 
       if (!subgender) {
-        throw new NotFoundError("Provided subgender_id does not exist");
+        throw new NotFoundError("Provided subgender_id not found");
       }
 
       const {

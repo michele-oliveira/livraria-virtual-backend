@@ -116,12 +116,12 @@ export class UsersService {
       relations: ["favoriteBooks"],
     });
     if (!user) {
-      throw new NotFoundError("User does not exist");
+      throw new NotFoundError("User not found");
     }
 
     const book = await this.booksRepository.findOneBy({ id: bookId });
     if (!book) {
-      throw new NotFoundError("Book does not exist");
+      throw new NotFoundError("Book not found");
     }
 
     if (user.favoriteBooks.find((book) => book.id === bookId)) {
@@ -140,12 +140,12 @@ export class UsersService {
       relations: ["favoriteBooks"],
     });
     if (!user) {
-      throw new NotFoundError("User does not exist");
+      throw new NotFoundError("User not found");
     }
 
     const book = await this.booksRepository.findOneBy({ id: bookId });
     if (!book) {
-      throw new NotFoundError("Book does not exist");
+      throw new NotFoundError("Book not found");
     }
     if (user.favoriteBooks.find((book) => book.id === bookId)) {
       user.favoriteBooks = user.favoriteBooks.filter(
